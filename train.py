@@ -14,10 +14,6 @@ if __name__ == '__main__':
     writer = Writer(opt)
     total_steps = 0
 
-    # if not opt.start_epoch == 1:
-    #     path = os.path.join("%s_ep%d.obj" % (opt.obj_filename.split('.obj')[0], opt.start_epoch))
-    #     mesh_upsampler(path, opt.output_dir, opt.input_dir, opt.start_epoch-1, nface=opt.pool_res_increment[0] / 1.5)
-
     for epoch in range(opt.start_epoch,opt.epoch+1):
         opt.cur_epoch = epoch
         obj_path = os.path.join(opt.input_dir, "%s_ep%d.obj" % (opt.obj_filename.split('.obj')[0], opt.cur_epoch))
@@ -89,9 +85,6 @@ if __name__ == '__main__':
               (epoch, total_steps))
         model.save_network('latest')
         model.save_network(epoch)
-        # for i in range(opt.batch_size):
-        #     save_name = "%s_ep%d_part%d_out.obj" % (opt.obj_filename.split('.obj')[0],epoch,i)
-        #     save_obj(model.criterion.pred_coord[i].squeeze(0).detach().cpu().numpy(),model.mesh[i].faces,opt.output_dir,save_name)
 
         parts_pts = []
         for i in range(opt.batch_size):
@@ -115,18 +108,6 @@ if __name__ == '__main__':
         path = os.path.join("%s_ep%d.obj" % (opt.obj_filename.split('.obj')[0], epoch + 1))
 
         mesh_upsampler(path, opt.output_dir, opt.input_dir, epoch, nface=len(faces))
-
-        # faces,out_pts,out_uv = midpoint_upsampler(faces,out_pts,uv)
-        # save_name = "%s_ep%d.obj" % (opt.obj_filename.split('.obj')[0],epoch+1)
-        # save_obj(out_pts,faces,opt.input_dir,save_name,uvs=out_uv)
-        # save_obj(out_pts,faces,'','tmp.obj')
-        # os.system(r"util/Manifold/build/simplify -i %s -o %s -f %d" % ('tmp.obj', "%s/%s" % (opt.input_dir,save_name), int(len(faces)* 1.5)))
-        # #os.system(r"rm tmp.obj")
-
-
-        # opt.ninput_edges+=opt.pool_res_increment[0]
-        # opt.pool_res = [opt.pool_res[i]+opt.pool_res_increment[i+1] for i in range(3)]
-        # model = create_model(opt) # change create new model
 
     writer.close()
 
